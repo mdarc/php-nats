@@ -40,7 +40,8 @@ final class NatsConnection implements LoggerAwareInterface
         private readonly NatsConnectionOptionInterface $connectionOptions,
         private readonly NatsTransportInterface $transport = new StreamTransport(),
         private readonly EncoderInterface $encoder = new JsonEncoder(),
-        private LoggerInterface $logger = new NullLogger()
+        private LoggerInterface $logger = new NullLogger(),
+        private readonly ClientConnectionOptions $clientConnectionOptions = new ClientConnectionOptions(),
     ) {
         $this->serverInfo = null;
         $this->currentServer = null;
@@ -234,7 +235,7 @@ final class NatsConnection implements LoggerAwareInterface
 
         $server = $this->currentServer;
 
-        $connectionOptions = new ClientConnectionOptions();
+        $connectionOptions = clone $this->clientConnectionOptions;
 
         if ($this->enableNoResponder) {
             $connectionOptions->setNoResponders(true);
